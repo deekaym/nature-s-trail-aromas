@@ -8,17 +8,26 @@ const slides = [
   {
     image: mistyMountain,
     name: "Misty Mountain",
-    notes: "Crisp · Eucalyptus · Pine",
+    subtitle: "New Arrival",
+    description: "Crisp eucalyptus & pine from high-altitude trails",
+    cta: "Shop Blends",
+    link: "/products",
   },
   {
     image: peacefulForest,
     name: "Peaceful Forest",
-    notes: "Calming · Grounding",
+    subtitle: "Best Seller",
+    description: "Calming cedarwood & lavender for evening rituals",
+    cta: "Explore Now",
+    link: "/products",
   },
   {
     image: sunsetTrail,
     name: "Sunset Trail",
-    notes: "Woody · Warm Spice · Citrus",
+    subtitle: "Staff Pick",
+    description: "Warm spice & citrus over a woody base",
+    cta: "Discover More",
+    link: "/products",
   },
 ];
 
@@ -30,88 +39,66 @@ const Hero = () => {
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(next, 4000);
+    const timer = setInterval(next, 5000);
     return () => clearInterval(timer);
   }, [next]);
 
+  const slide = slides[current];
+
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-card pt-14">
-      {/* Subtle background wash */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-card to-background opacity-60" />
+    <section className="relative min-h-[75vh] flex items-center overflow-hidden bg-card">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-r from-card via-card/95 to-transparent z-10" />
 
-      <div className="relative z-10 container mx-auto px-12 py-16 flex flex-col items-center text-center">
-        {/* Eyebrow */}
-        <p className="eyebrow mb-6 animate-fade-up">Botanical Essential Oil Blends</p>
+      {/* Product image — right side */}
+      <div className="absolute right-0 top-0 bottom-0 w-1/2 flex items-center justify-center">
+        {slides.map((s, i) => (
+          <img
+            key={s.name}
+            src={s.image}
+            alt={`${s.name} essential oil blend`}
+            className={`absolute w-72 h-72 md:w-96 md:h-96 object-contain drop-shadow-2xl transition-all duration-700 ${
+              i === current
+                ? "opacity-100 scale-100 translate-y-0"
+                : "opacity-0 scale-90 translate-y-8"
+            }`}
+          />
+        ))}
+      </div>
 
-        {/* Headline */}
-        <h1 className="font-display text-[clamp(36px,5vw,64px)] leading-[1.05] mb-4 animate-fade-up">
-          Where nature
-          <br />
-          <em className="italic text-deep-sage">meets calm</em>
-        </h1>
-
-        <p className="font-body text-[15px] leading-[1.9] text-soft-ink mb-10 max-w-md animate-fade-up" style={{ animationDelay: "0.15s" }}>
-          Each blend is drawn from a place — a trail walked, a forest at dusk, a mountain in mist.
-        </p>
-
-        {/* Product carousel */}
-        <div className="relative w-full max-w-3xl mb-10">
-          <div className="flex items-center justify-center gap-8 md:gap-16">
-            {slides.map((slide, i) => {
-              const isActive = i === current;
-              const offset = i - current;
-              return (
-                <button
-                  key={slide.name}
-                  onClick={() => setCurrent(i)}
-                  className={`flex-shrink-0 transition-all duration-700 ease-out cursor-pointer ${
-                    isActive
-                      ? "scale-100 opacity-100 z-10"
-                      : "scale-75 opacity-40 z-0"
-                  }`}
-                  style={{
-                    transform: `translateX(${offset * -20}px) scale(${isActive ? 1 : 0.75})`,
-                  }}
-                >
-                  <img
-                    src={slide.image}
-                    alt={`${slide.name} essential oil blend`}
-                    className="w-40 h-40 md:w-56 md:h-56 object-contain drop-shadow-lg"
-                  />
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Active product name */}
-          <div className="mt-8 transition-all duration-500">
-            <h3 className="font-display text-2xl mb-1">{slides[current].name}</h3>
-            <p className="font-body text-[11px] tracking-[0.15em] text-muted-foreground">
-              {slides[current].notes}
-            </p>
-          </div>
+      {/* Text content — left side */}
+      <div className="relative z-20 container mx-auto px-12 py-24">
+        <div className="max-w-lg">
+          <p className="eyebrow mb-4 transition-all duration-500">{slide.subtitle}</p>
+          <h1 className="font-display text-[clamp(40px,6vw,72px)] leading-[1.05] mb-2">
+            {slide.name.split(" ")[0]}
+            <br />
+            <em className="italic text-deep-sage">{slide.name.split(" ").slice(1).join(" ")}</em>
+          </h1>
+          <p className="font-body text-[15px] leading-[1.8] text-soft-ink mb-8 max-w-sm">
+            {slide.description}
+          </p>
+          <Link
+            to={slide.link}
+            className="inline-block bg-foreground text-primary-foreground font-body text-[11px] tracking-[0.2em] uppercase px-8 py-3.5 hover:bg-deep-sage transition-colors"
+          >
+            {slide.cta}
+          </Link>
         </div>
 
         {/* Dots */}
-        <div className="flex gap-2 mb-8">
+        <div className="flex gap-2 mt-12">
           {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                i === current ? "bg-deep-sage w-6" : "bg-sage/40"
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === current ? "bg-deep-sage w-8" : "bg-sage/40 w-4"
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
-
-        <Link
-          to="/products"
-          className="inline-block bg-foreground text-primary-foreground font-display italic text-lg px-8 py-3 tracking-wide hover:bg-deep-sage transition-colors"
-        >
-          Explore All Blends
-        </Link>
       </div>
     </section>
   );
